@@ -83,9 +83,9 @@ function handleClickAProduct(event){
     totalClicks++;
 
     if (totalClicks === maxClicks){
+      renderListTally();
       pickAProduct.removeEventListener('click',handleClickAProduct);
     }
-
 
     var targetSrc = event.target.getAttribute('src');
     for (var i = 0; i < productArray.length; i++){
@@ -125,11 +125,14 @@ function renderRandomProducts(){
 }
 
 function renderListTally(){
-  var list = document.getElementById('clicks');
-  var listTally = document.createElement('li');
-  listTally.textContent = (productArray.imgCaption + ': ' + productArray.clicked);
 
-  list.appendChild(listTally);
+  var list = document.getElementById('clicks');
+
+  for (var i = 0; i < productArray.length; i++){
+    var listTally = document.createElement('li');
+    listTally.textContent = (productArray[i].imgCaption + ' had ' + productArray[i].clicked + ' votes, and was shown ' + productArray[i].shown + ' times.');
+    list.appendChild(listTally);
+  }
 
 }
 
@@ -142,4 +145,4 @@ function randomizer(min, max){
 // ==================== invocations ==================== //
 
 renderRandomProducts();
-renderListTally();
+
