@@ -1,0 +1,44 @@
+* {
+  outline: red dashed  1px;
+}
+
+h1 {
+  width: auto;
+  padding: 30px;
+  font-size: 30px;
+  font-weight: 900;
+  position: relative;
+  left: 40%;
+}
+
+h2 {
+  margin: auto;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#pick {
+  margin: auto;
+  overflow: hidden;
+}
+
+#pick > figure {
+  width: auto;
+}
+
+img {
+  float: left;
+  padding: 20px;
+  width: 30%;
+}
+
+#clicks {
+  width: auto;
+  position: relative;
+  left: 45%;
+}
+
+figcaption {
+  position: relative;
+  
+}
