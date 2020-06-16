@@ -35,7 +35,7 @@
 // ==================== GLOBAL VARS / ARRAYS ==================== //
 
 var numberOfImages = 4;
-var productArray = [];
+Product.array = [];
 var totalClicks = 0;
 var maxClicks = 25;
 
@@ -48,8 +48,9 @@ function Product(imgSource, caption){
   this.imgSrc = imgSource;
   this.imgCaption = caption;
 
-  productArray.push(this);
+  Product.array.push(this);
 }
+
 
 new Product('img/bag.jpg', 'star wars bag');
 new Product('img/banana.jpg', 'banana slicer');
@@ -83,18 +84,19 @@ function handleClickAProduct(event){
   if (event.target.tagName === 'IMG'){
     totalClicks++;
 
+
+    var targetSrc = event.target.getAttribute('src');
+    for (var i = 0; i < Product.array.length; i++){
+      if (Product.array[i].imgSrc === targetSrc){
+        Product.array[i].clicked++;
+      }
+    }
+
+
     if (totalClicks === maxClicks){
       renderListTally();
       pickAProduct.removeEventListener('click',handleClickAProduct);
     }
-
-    var targetSrc = event.target.getAttribute('src');
-    for (var i = 0; i < productArray.length; i++){
-      if (productArray[i].imgSrc === targetSrc){
-        productArray[i].clicked++;
-      }
-    }
-
     // dynamicRenderImages();
     renderRandomProducts();
 
@@ -108,14 +110,14 @@ function handleClickAProduct(event){
 
 function renderRandomProducts(){
 
-  var firstRandom = randomizer(0, productArray.length);
-  var secondRandom = randomizer(0, productArray.length);
-  var thirdRandom = randomizer(0, productArray.length);
+  var firstRandom = randomizer(0, Product.array.length);
+  var secondRandom = randomizer(0, Product.array.length);
+  var thirdRandom = randomizer(0, Product.array.length);
 
   while (firstRandom === secondRandom || firstRandom === thirdRandom || secondRandom === thirdRandom){
-    firstRandom = randomizer(0, productArray.length);
-    secondRandom = randomizer(0, productArray.length);
-    thirdRandom = randomizer(0, productArray.length);
+    firstRandom = randomizer(0, Product.array.length);
+    secondRandom = randomizer(0, Product.array.length);
+    thirdRandom = randomizer(0, Product.array.length);
   }
 
   //img render
@@ -123,14 +125,14 @@ function renderRandomProducts(){
   var middleImage = document.getElementById('middle');
   var rightImage = document.getElementById('right');
 
-  leftImage.src = productArray[firstRandom].imgSrc;
-  productArray[firstRandom].shown++;
+  leftImage.src = Product.array[firstRandom].imgSrc;
+  Product.array[firstRandom].shown++;
 
-  middleImage.src = productArray[secondRandom].imgSrc;
-  productArray[secondRandom].shown++;
+  middleImage.src = Product.array[secondRandom].imgSrc;
+  Product.array[secondRandom].shown++;
 
-  rightImage.src = productArray[thirdRandom].imgSrc;
-  productArray[thirdRandom].shown++;
+  rightImage.src = Product.array[thirdRandom].imgSrc;
+  Product.array[thirdRandom].shown++;
 
 }
 
@@ -144,12 +146,12 @@ function renderListTally(){
   clicksHeading.textContent = 'Voting Results';
   clicks.appendChild(clicksHeading);
 
-  for (var i = 0; i < productArray.length; i++){
+  for (var i = 0; i < Product.array.length; i++){
     var listTally = document.createElement('li');
     listTally.textContent = (
-      productArray[i].imgCaption + ' had ' +
-      productArray[i].clicked + ' votes, and was shown ' +
-      productArray[i].shown + ' times.');
+      Product.array[i].imgCaption + ' had ' +
+      Product.array[i].clicked + ' votes, and was shown ' +
+      Product.array[i].shown + ' times.');
 
     clicks.appendChild(listTally);
   }
@@ -166,17 +168,37 @@ function randomizer(min, max){
 
 // =============== STRETCH GOAL STUFF =============== //
 
-// nested for loop to determine how many images to show?
+
+
+// include randomizer check
+// do while
+// check if random index === the first one
+// DO the checking in a loop, see if it equals any of them
+// refactor so we don't need first random image
+
 
 function dynamicRenderImages(){
 
-  for (var j = 0; j < numberOfImages; j++){
-    var random = randomizer(0,productArray.length);
+  // var randomImageIndex = [];
 
-    var parent = document.getElementById('figure');
+  var parent = document.getElementById('figure');
+  parent.innerHTML = '';
+
+  for (var j = 0; j < numberOfImages; j++){
+    var random = randomizer(0,Product.array.length);
+
+
+    // 2.
+
     var imageRender = document.createElement('img');
-    imageRender.src = productArray[random].imgSrc;
-    productArray[random].shown++;
+
+    // 2.5
+    imageRender.src = Product.array[random].imgSrc;
+    Product.array[random].shown++;
+
+
+
+    // 3.
     parent.appendChild(imageRender);
 
 
@@ -191,6 +213,49 @@ function dynamicRenderImages(){
 
 // ==================== invocations ==================== //
 
+
 renderRandomProducts();
 // dynamicRenderImages();
 
+
+// ==================== chart ==================== //
+
+var labels = [];
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+  // The type of chart we want to create
+  type: 'line',
+
+  // The data for our dataset
+  data: {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      label: 'My First dataset',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: [0, 10, 5, 2, 20, 30, 45]
+    }]
+  },
+
+  // Configuration options go here
+  options: {}
+});
+
+/*
+
+when to render the chart?
+- when rendering the results, after maxClicks (25)
+
+what data in chart?
+- amount of clicks
+- how many times show
+
+what should the labels be?
+- caption of images
+
+
+
+
+
+*/
