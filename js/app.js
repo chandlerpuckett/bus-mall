@@ -126,12 +126,21 @@ function renderRandomProducts(){
 
 function renderListTally(){
 
-  var list = document.getElementById('clicks');
+  var clicks = document.getElementById('clicks');
+  var clicksHeading = document.createElement('h2');
+  clicksHeading.textContent = 'Voting Results';
+  clicks.appendChild(clicksHeading);
 
   for (var i = 0; i < productArray.length; i++){
     var listTally = document.createElement('li');
-    listTally.textContent = (productArray[i].imgCaption + ' had ' + productArray[i].clicked + ' votes, and was shown ' + productArray[i].shown + ' times.');
-    list.appendChild(listTally);
+    listTally.textContent = (
+      productArray[i].imgCaption + ' had ' +
+      productArray[i].clicked + ' votes, and was shown ' +
+      productArray[i].shown + ' times.');
+
+
+
+    clicks.appendChild(listTally);
   }
 
 }
