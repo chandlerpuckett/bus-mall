@@ -34,10 +34,14 @@
 
 // ==================== GLOBAL VARS / ARRAYS ==================== //
 
-var numberOfImages = 4;
 Product.array = [];
+var productVotesArray = [];
+var randomColorArray = [];
+var labelsArray = [];
+
+var numberOfImages = 4;
 var totalClicks = 0;
-var maxClicks = 25;
+var maxClicks = 5;
 
 
 // ==================== constructors ==================== //
@@ -50,7 +54,6 @@ function Product(imgSource, caption){
 
   Product.array.push(this);
 }
-
 
 new Product('img/bag.jpg', 'star wars bag');
 new Product('img/banana.jpg', 'banana slicer');
@@ -95,6 +98,7 @@ function handleClickAProduct(event){
 
     if (totalClicks === maxClicks){
       renderListTally();
+      renderChartToPage();
       pickAProduct.removeEventListener('click',handleClickAProduct);
     }
     // dynamicRenderImages();
@@ -134,6 +138,14 @@ function renderRandomProducts(){
   rightImage.src = Product.array[thirdRandom].imgSrc;
   Product.array[thirdRandom].shown++;
 
+  var leftCaption = document.getElementById('left-caption');
+  var middleCaption = document.getElementById('middle-caption');
+  var rightCaption = document.getElementById('right-caption');
+
+  leftCaption.textContent = Product.Array[firstRandom].imgCaption;
+  middleCaption.textContent = Product.Array[secondRandom].imgCaption;
+  rightCaption.textContent = Product.Array[thirdRandom].imgCaption;
+
 }
 
 function renderListTally(){
@@ -155,6 +167,12 @@ function renderListTally(){
 
     clicks.appendChild(listTally);
   }
+
+
+
+
+
+
 
 }
 
@@ -218,44 +236,62 @@ renderRandomProducts();
 // dynamicRenderImages();
 
 
-// ==================== chart ==================== //
-
-var labels = [];
-
-var ctx = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx, {
-  // The type of chart we want to create
-  type: 'line',
-
-  // The data for our dataset
-  data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45]
-    }]
-  },
-
-  // Configuration options go here
-  options: {}
-});
-
-/*
-
-when to render the chart?
-- when rendering the results, after maxClicks (25)
-
-what data in chart?
-- amount of clicks
-- how many times show
-
-what should the labels be?
-- caption of images
+// ==================== chart functions ==================== //
 
 
+function createLabelsForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    labelsArray.push(Product.array[i].imgCaption);
+  }
+}
 
 
+function tallyVotesForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    productVotesArray.push(Product.array[i].clicked);
+  }
+}
 
-*/
+
+function colorRandomizer(){
+  for (var i = 0; i < Product.array.length; i++){
+    var x = randomizer(0, 255);
+    var y = randomizer(0, 255);
+    var z = randomizer(0, 255);
+    randomColorArray.push('rgba('+x+','+y+','+z+',0.5)');
+  }
+}
+
+
+function renderChartToPage(){
+
+  createLabelsForChart();
+  colorRandomizer();
+  tallyVotesForChart();
+
+  var ctx = document.getElementById('myChart');
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labelsArray,
+      datasets: [{
+        label: 'Voting Results',
+        data: productVotesArray,
+        backgroundColor: randomColorArray,
+        borderColor: randomColorArray,
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
