@@ -84,10 +84,6 @@ function handleClickAProduct(event){
   if (event.target.tagName === 'IMG'){
     totalClicks++;
 
-    if (totalClicks === maxClicks){
-      renderListTally();
-      pickAProduct.removeEventListener('click',handleClickAProduct);
-    }
 
     var targetSrc = event.target.getAttribute('src');
     for (var i = 0; i < Product.array.length; i++){
@@ -96,8 +92,13 @@ function handleClickAProduct(event){
       }
     }
 
-    dynamicRenderImages();
-    // renderRandomProducts();
+
+    if (totalClicks === maxClicks){
+      renderListTally();
+      pickAProduct.removeEventListener('click',handleClickAProduct);
+    }
+    // dynamicRenderImages();
+    renderRandomProducts();
 
   } else {
     alert('please choose a product');
@@ -213,12 +214,13 @@ function dynamicRenderImages(){
 // ==================== invocations ==================== //
 
 
-// renderRandomProducts();
-dynamicRenderImages();
+renderRandomProducts();
+// dynamicRenderImages();
 
 
 // ==================== chart ==================== //
 
+var labels = [];
 
 var ctx = document.getElementById('myChart').getContext('2d');
 var chart = new Chart(ctx, {
@@ -239,3 +241,21 @@ var chart = new Chart(ctx, {
   // Configuration options go here
   options: {}
 });
+
+/*
+
+when to render the chart?
+- when rendering the results, after maxClicks (25)
+
+what data in chart?
+- amount of clicks
+- how many times show
+
+what should the labels be?
+- caption of images
+
+
+
+
+
+*/
