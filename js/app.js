@@ -34,9 +34,10 @@
 
 // ==================== GLOBAL VARS / ARRAYS ==================== //
 
+var numberOfImages = 4;
 var productArray = [];
 var totalClicks = 0;
-var maxClicks = 10;
+var maxClicks = 25;
 
 
 // ==================== constructors ==================== //
@@ -94,6 +95,7 @@ function handleClickAProduct(event){
       }
     }
 
+    // dynamicRenderImages();
     renderRandomProducts();
 
   } else {
@@ -102,11 +104,19 @@ function handleClickAProduct(event){
 
 }
 
+// ============ WORKING CODE ============= //
 
 function renderRandomProducts(){
+
   var firstRandom = randomizer(0, productArray.length);
   var secondRandom = randomizer(0, productArray.length);
   var thirdRandom = randomizer(0, productArray.length);
+
+  while (firstRandom === secondRandom || firstRandom === thirdRandom || secondRandom === thirdRandom){
+    firstRandom = randomizer(0, productArray.length);
+    secondRandom = randomizer(0, productArray.length);
+    thirdRandom = randomizer(0, productArray.length);
+  }
 
   //img render
   var leftImage = document.getElementById('left');
@@ -126,6 +136,9 @@ function renderRandomProducts(){
 
 function renderListTally(){
 
+  var removePics = document.getElementById('pick');
+  removePics.remove();
+
   var clicks = document.getElementById('clicks');
   var clicksHeading = document.createElement('h2');
   clicksHeading.textContent = 'Voting Results';
@@ -138,12 +151,11 @@ function renderListTally(){
       productArray[i].clicked + ' votes, and was shown ' +
       productArray[i].shown + ' times.');
 
-
-
     clicks.appendChild(listTally);
   }
 
 }
+
 
 function randomizer(min, max){
   return Math.floor(Math.random() * (max-min) + min);
@@ -151,7 +163,34 @@ function randomizer(min, max){
 
 
 
+
+// =============== STRETCH GOAL STUFF =============== //
+
+// nested for loop to determine how many images to show?
+
+function dynamicRenderImages(){
+
+  for (var j = 0; j < numberOfImages; j++){
+    var random = randomizer(0,productArray.length);
+
+    var parent = document.getElementById('figure');
+    var imageRender = document.createElement('img');
+    imageRender.src = productArray[random].imgSrc;
+    productArray[random].shown++;
+    parent.appendChild(imageRender);
+
+
+    // console.log('img render: ' + imageRender);
+    // console.log('img render: ' + productArray[random].imgSrc);
+  }
+
+  // iterate (numOfImages) times to create X amount of img tags
+
+}
+
+
 // ==================== invocations ==================== //
 
 renderRandomProducts();
+// dynamicRenderImages();
 

@@ -3,12 +3,12 @@
 }
 
 h1 {
-  width: auto;
+  width: fit-content;
   padding: 30px;
   font-size: 30px;
   font-weight: 900;
   position: relative;
-  left: 40%;
+  left: 30%;
 }
 
 h2 {
@@ -19,7 +19,6 @@ h2 {
 
 #pick {
   margin: auto;
-  overflow: hidden;
   width: auto;
 }
 
@@ -29,20 +28,19 @@ h2 {
 
 img {
   float: left;
-  padding: 30px;
-  width: 27.5%;
+  margin: 10px;
+  width: 30%;
+  height: auto;
 }
 
 #clicks {
-  width: auto;
+  width: fit-content;
   position: relative;
+  margin-top: 100px;
   left: 35%;
   list-style: none;
   font-size: 20px;
-  line-height: 1.25;
-}
+  line-height: 1.5;
+  padding-bottom: 50px;
 
-.style {
-  font-weight: bold;
-  color: red;
 }
