@@ -39,7 +39,7 @@ var productVotesArray = [];
 var randomColorArray = [];
 var labelsArray = [];
 
-var numberOfImages = 4;
+var numberOfImages = 3;
 var totalClicks = 0;
 var maxClicks = 5;
 
@@ -89,6 +89,7 @@ function handleClickAProduct(event){
 
 
     var targetSrc = event.target.getAttribute('src');
+
     for (var i = 0; i < Product.array.length; i++){
       if (Product.array[i].imgSrc === targetSrc){
         Product.array[i].clicked++;
@@ -101,8 +102,21 @@ function handleClickAProduct(event){
       renderChartToPage();
       pickAProduct.removeEventListener('click',handleClickAProduct);
     }
+
+
+    var reset = document.getElementById('pick');
+    reset.innerHTML = '';
+
+    while (randomImageIndexGlobal.length > 0){
+      randomImageIndexGlobal = [];
+    }
+
+    drawRandomImages();
+    renderRandomImages();
+
     // dynamicRenderImages();
-    renderRandomProducts();
+    // renderRandomProducts();
+
 
   } else {
     alert('please choose a product');
@@ -112,17 +126,135 @@ function handleClickAProduct(event){
 
 // ============ WORKING CODE ============= //
 
-function renderRandomProducts(){
+
+var randomImageIndexGlobal = [];
+
+
+function drawRandomImages(){
 
   var firstRandom = randomizer(0, Product.array.length);
   var secondRandom = randomizer(0, Product.array.length);
   var thirdRandom = randomizer(0, Product.array.length);
 
-  while (firstRandom === secondRandom || firstRandom === thirdRandom || secondRandom === thirdRandom){
+  do {
     firstRandom = randomizer(0, Product.array.length);
-    secondRandom = randomizer(0, Product.array.length);
     thirdRandom = randomizer(0, Product.array.length);
   }
+  while (
+    thirdRandom === firstRandom ||
+    thirdRandom === secondRandom ||
+    firstRandom === secondRandom
+  );
+
+  randomImageIndexGlobal.push(Product.array[firstRandom]);
+  randomImageIndexGlobal.push(Product.array[secondRandom]);
+  randomImageIndexGlobal.push(Product.array[thirdRandom]);
+
+  Product.array[firstRandom].shown++;
+  Product.array[secondRandom].shown++;
+  Product.array[thirdRandom].shown++;
+
+}
+
+
+function renderRandomImages(){
+
+
+  for (var i = 0; i < randomImageIndexGlobal.length; i++){
+    var parent = document.getElementById('pick');
+    var divParent = document.createElement('div');
+    parent.appendChild(divParent);
+
+    var imgRender = document.createElement('img');
+    imgRender.src = randomImageIndexGlobal[i].imgSrc;
+
+
+    var captionRender = document.createElement('p');
+    captionRender.textContent = randomImageIndexGlobal[i].imgCaption;
+
+    divParent.appendChild(imgRender);
+    divParent.appendChild(captionRender);
+  }
+
+}
+
+
+function renderRandomProducts(){
+  // pick a random image
+
+
+  //check for duplicate in global array (3 images)
+
+  // for (var i = 0; i < randomImageIndexGlobal.length; i++){
+
+  //   while( randomImageIndexGlobal[i] === Product.array[firstRandom].imgSrc || randomImageIndexGlobal[i] === Product.array[secondRandom].imgSrc || randomImageIndexGlobal[i] === Product.array[thirdRandom].imgSrc) {
+
+  //     console.log ('duplicate found - re pick random images');
+
+  //     firstRandom = randomizer(0, Product.array.length);
+  //     secondRandom = randomizer(0, Product.array.length);
+  //     thirdRandom = randomizer(0, Product.array.length);
+
+  //   }
+
+
+  // }
+
+  // while (
+  //   randomImageIndexGlobal[0] === Product.array[firstRandom].imgSrc ||
+  //   randomImageIndexGlobal[1] === Product.array[secondRandom].imgSrc ||
+  //   randomImageIndexGlobal[2] === Product.array[thirdRandom].imgSrc) {
+  //   firstRandom = randomizer(0, Product.array.length);
+  //   secondRandom = randomizer(0, Product.array.length);
+  //   thirdRandom = randomizer(0, Product.array.length);
+  // }
+
+  // for (var i = 0; i < randomImageIndexGlobal.length; i++){
+
+  //   if (
+  //     randomImageIndexGlobal[i] === Product.array[firstRandom].imgSrc ||
+  //     randomImageIndexGlobal[i] === Product.array[secondRandom].imgSrc ||
+  //     randomImageIndexGlobal[i] === Product.array[thirdRandom].imgSrc){
+
+  //     console.log(' duplicate duplicate duplicate ');
+
+  //     firstRandom = randomizer(0, Product.array.length);
+  //     secondRandom = randomizer(0, Product.array.length);
+  //     thirdRandom = randomizer(0, Product.array.length);
+  //   }
+  // }
+
+  //empty global array
+  while (randomImageIndexGlobal.length > 0){
+    randomImageIndexGlobal = [];
+  }
+
+
+
+
+  /* PICK RANDOM IMAGES */
+
+
+  var firstRandom = randomizer(0, Product.array.length);
+  var secondRandom = randomizer(0, Product.array.length);
+  var thirdRandom = randomizer(0, Product.array.length);
+
+  do {
+    firstRandom = randomizer(0, Product.array.length);
+    thirdRandom = randomizer(0, Product.array.length);
+  }
+  while (
+    thirdRandom === firstRandom ||
+    thirdRandom === secondRandom ||
+    firstRandom === secondRandom
+  );
+
+  randomImageIndexGlobal.push(Product.array[firstRandom].imgSrc);
+  randomImageIndexGlobal.push(Product.array[secondRandom].imgSrc);
+  randomImageIndexGlobal.push(Product.array[thirdRandom].imgSrc);
+
+
+
 
   //img render
   var leftImage = document.getElementById('left');
@@ -142,13 +274,16 @@ function renderRandomProducts(){
   var middleCaption = document.getElementById('middle-caption');
   var rightCaption = document.getElementById('right-caption');
 
-  leftCaption.textContent = Product.Array[firstRandom].imgCaption;
-  middleCaption.textContent = Product.Array[secondRandom].imgCaption;
-  rightCaption.textContent = Product.Array[thirdRandom].imgCaption;
+  leftCaption.textContent = Product.array[firstRandom].imgCaption;
+  middleCaption.textContent = Product.array[secondRandom].imgCaption;
+  rightCaption.textContent = Product.array[thirdRandom].imgCaption;
 
 }
 
 function renderListTally(){
+
+  var hideH1 = document.getElementById('h1');
+  hideH1.innerHTML = '';
 
   var removePics = document.getElementById('pick');
   removePics.remove();
@@ -167,11 +302,6 @@ function renderListTally(){
 
     clicks.appendChild(listTally);
   }
-
-
-
-
-
 
 
 }
@@ -197,9 +327,7 @@ function randomizer(min, max){
 
 function dynamicRenderImages(){
 
-  // var randomImageIndex = [];
-
-  var parent = document.getElementById('figure');
+  var parent = document.getElementById('pick');
   parent.innerHTML = '';
 
   for (var j = 0; j < numberOfImages; j++){
@@ -219,6 +347,9 @@ function dynamicRenderImages(){
     // 3.
     parent.appendChild(imageRender);
 
+    var captionRender = document.createElement('p');
+    captionRender.textContent = Product.array[random].imgCaption;
+    parent.appendChild(captionRender);
 
     // console.log('img render: ' + imageRender);
     // console.log('img render: ' + productArray[random].imgSrc);
@@ -232,8 +363,12 @@ function dynamicRenderImages(){
 // ==================== invocations ==================== //
 
 
-renderRandomProducts();
+// renderRandomProducts();
 // dynamicRenderImages();
+
+
+drawRandomImages();
+renderRandomImages();
 
 
 // ==================== chart functions ==================== //
@@ -283,6 +418,7 @@ function renderChartToPage(){
         borderWidth: 1,
       }]
     },
+
     options: {
       scales: {
         yAxes: [{
