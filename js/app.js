@@ -253,6 +253,32 @@ function drawRandomImages(){
 
   // ============ BROKEN TEST ============ //
 
+  // ------ how to solve repeating issue ------ //
+
+
+
+  // do --> pick random numbers
+  // while --> testArray.includes(first) || testArray.includes(second) || testArray.includes(third)
+
+  // do {
+  //   secondRandom = randomizer();
+  //   do {
+  //     firstRandom = randomizer();
+  //   } while (firstRandom === secondRandom);
+
+  //   do {
+  //     thirdRandom = randomizer();
+  //   } while (thirdRandom === firstrandom || thirdRandom === secondRandom);
+  // } while (previousShow.includes(firstRandom) ||
+  // previousShow.includes(secondRandom) ||
+  // previousShow.includes(thirdRandom) );
+
+  // previousShow = [firstRandom,secondRandom,thirdRandom];
+
+
+
+  // ------ how to solve repeating issue ------ //
+
 
   // render images to page -- WORKING CODE -- pulls from localTestArray
 
@@ -345,82 +371,58 @@ drawRandomImages();
 
 // ==================== chart functions ==================== //
 
+// ---- combine for loops into one ---- //
 
-function createLabelsForChart(){
+function renderDataForChart(){
   for (var i = 0; i < Product.array.length; i++){
-    labelsArray.push(Product.array[i].imgCaption);
-  }
-}
+    var product = Product.array[i];
 
+    labelsArray.push(product.imgCaption);
+    productVotesArray.push(product.clicked);
+    tallyShownArray.push(product.shown);
 
-function tallyVotesForChart(){
-  for (var i = 0; i < Product.array.length; i++){
-    productVotesArray.push(Product.array[i].clicked);
-  }
-}
-
-function tallyShownForChart(){
-  for (var i = 0; i < Product.array.length; i++){
-    tallyShownArray.push(Product.array[i].shown);
-  }
-}
-
-
-function colorRandomizer(){
-  for (var i = 0; i < Product.array.length; i++){
     var x = randomizer(0, 255);
     var y = randomizer(0, 255);
     var z = randomizer(0, 255);
-    randomColorArray.push('rgba('+x+','+y+','+z+',0.5)');
+    var colorString = ('rgba('+x+','+y+','+z+',0.5)');
+    randomColorArray.push(colorString);
   }
 }
 
-// ========== BROKEN ========== //
-// -- second data set not showing up
-
-
-function renderChartToPage(){
-
+function cleanPageForChart (){
   var hideH1 = document.getElementById('h1');
   hideH1.innerHTML = '';
 
   var removePics = document.getElementById('pick');
   removePics.remove();
 
-  createLabelsForChart();
-  colorRandomizer();
-  tallyVotesForChart();
+}
 
-  var ctx = document.getElementById('myChart');
+function renderChartToPage(){
+
+  cleanPageForChart();
+  renderDataForChart();
+
 
   var ctx = document.getElementById('myChart');
   var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labelsArray,
-
-      datasets:
-
-      [{
+      datasets: [{
         label: 'VOTES',
         data: productVotesArray,
         backgroundColor: randomColorArray,
         borderColor: randomColorArray,
-        borderWidth: 2,
-      }],
-
-    },
-
-    data2: {
-      labels: labelsArray,
-      datasets:
-      [{
+        borderWidth: 1,
+      },{
         label: 'TIMES SHOWN',
         data: tallyShownArray,
         backgroundColor: randomColorArray,
         borderColor: randomColorArray,
         borderWidth: 2,
       }]
+
     },
 
     options: {
@@ -432,10 +434,9 @@ function renderChartToPage(){
         }]
       }
     }
-
   });
-
 }
+
 
 // ==================== OLD CODE ==================== //
 
