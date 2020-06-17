@@ -58,7 +58,7 @@ function Product(imgSource, caption){
 
 new Product('img/bag.jpg', 'star wars bag');
 new Product('img/banana.jpg', 'banana slicer');
-new Product('img/bathroom.jpg', 'angry turd');
+new Product('img/bathroom.jpg', 'iPoop');
 new Product('img/boots.jpg', 'soggy toes');
 new Product('img/breakfast.jpg', 'breakfast bonanza');
 new Product('img/bubblegum.jpg', 'meatball bubble gum');

@@ -1,14 +1,11 @@
-* {
-  /* outline: red dashed  1px; */
-}
 
 body {
+
   background-color: rgba(164,255,220,15%);
 }
 
 
 h1 {
-  /* outline: chocolate dashed 2px; */
 
   width: fit-content;
 
@@ -19,14 +16,13 @@ h1 {
   font-family: Open Sans;
   font-size: 40px;
   font-weight: 900;
-
-  /* position: absolute; */
   
   top: 115px;
   left: 420px;
 }
 
 h2 {
+
   margin: auto;
   font-size: 30px;
   font-weight: bold;
@@ -34,7 +30,7 @@ h2 {
 
 
 #pick {
-  /* outline: yellowgreen dashed 2px; */
+
   background-color: #A4FFDC;
 
   margin: auto;
@@ -51,10 +47,10 @@ h2 {
 }
 
 #pick > div {
+
   display: flex;
   float: left;
 
-  /* outline: purple dashed 1px; */
   position: relative;
 
   width: 450px;
@@ -66,20 +62,26 @@ h2 {
 }
 
 div > p:nth-child(1n){
+
   position: absolute;
   font-size: 20px;
   font-family: Quicksand;
+  font-weight: 500;
 
-  background-color: rgba(255,192,164,100);
+  border-radius: 30px;
+  width: 150px;
+
+  background-color: #FFD59A;
 
   top: -30px;
-  left: 60px;
+  left: 150px;
 
   box-shadow: 1px 2px 2px #A73400;
 
 }
 
 div > p:nth-child(2){
+
   position: absolute;
   font-family: Open Sans;
   font-size: 30px;
@@ -95,12 +97,13 @@ div > p:nth-child(2){
 }
 
 div > p:nth-child(3n) {
+
   position: absolute;
   text-align: center;
   font-family: Quicksand;
 
 
-  width: fit-content;
+  width: 200px;
   height: fit-content;
   padding: 10px;
 
@@ -108,12 +111,11 @@ div > p:nth-child(3n) {
   font-weight: 600;
 
   top: 525px;
-  left: 140px;
+  left: 110px;
 }
 
 
 p {
-  /* outline: blue dashed 1px; */
   
   padding-top: 10px;
 
@@ -130,7 +132,6 @@ p {
 }
 
 img {
-  /* outline: red dashed 1px; */
 
   display: flex;
   align-self: center;
@@ -141,21 +142,22 @@ img {
   margin-left: 30px;
 
   border: 1px solid #BFBFBF;
-  background-color: rgb(241, 239, 239);
+  background-color: #f1efef;
   box-shadow: 10px 10px 5px #007146;
 
 }
 
 img:hover {
-  transition: 0.5s;
 
-  /* transition-duration: 2s; */
+  transition: 0.5s;
   box-shadow: 20px 20px 15px #FF0044;
+
 }
 
 
 
 #clicks {
+
   width: fit-content;
   position: relative;
   margin-top: 100px;
@@ -168,8 +170,10 @@ img:hover {
 }
 
 #chart {
+
   position: relative;
   max-width: 65%;
   margin-left: 15%;
   padding-bottom: 100px;
+
 }
