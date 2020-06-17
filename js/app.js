@@ -110,7 +110,7 @@ function handleClickAProduct(event){
     */
 
     wipeOldImages();
-    drawRandomImages();
+    reDrawRandomImages();
 
   } else {
     alert('please choose a product');
@@ -185,77 +185,122 @@ function wipeOldImages (){
 
 var randomImageIndexGlobal = [];
 
+var globalRandomArray = [];
 
-function drawRandomImages(){
+function initialDrawRandomImage(){
 
-  var localTestArray = [];
+  var localRandomArray = [];
 
   var firstRandom = randomizer(0, Product.array.length);
   var secondRandom = randomizer(0, Product.array.length);
   var thirdRandom = randomizer(0, Product.array.length);
 
-  do {
-    firstRandom = randomizer(0, Product.array.length);
-    thirdRandom = randomizer(0, Product.array.length);
+  function drawThreeRandomImages(){
+    do {
+      secondRandom = randomizer(0, Product.array.length);
+      do {
+        thirdRandom = randomizer(0, Product.array.length);
+      } while (secondRandom === thirdRandom);
+    } while ( (firstRandom === secondRandom) ||
+    (firstRandom === thirdRandom) ||
+    (secondRandom === thirdRandom));
+
+    localRandomArray.push(Product.array[firstRandom]);
+    localRandomArray.push(Product.array[secondRandom]);
+    localRandomArray.push(Product.array[thirdRandom]);
+
   }
-  while (
-    thirdRandom === firstRandom ||
-    thirdRandom === secondRandom ||
-    firstRandom === secondRandom
+
+  drawThreeRandomImages();
+  globalRandomArray = [firstRandom,secondRandom,thirdRandom];
+
+  for (var i = 0; i < localRandomArray.length; i++){
+
+    // images
+    var parent = document.getElementById('pick');
+    var divParent = document.createElement('div');
+    parent.appendChild(divParent);
+
+    var imgRender = document.createElement('img');
+    imgRender.src = localRandomArray[i].imgSrc;
+    localRandomArray[i].shown++;
+
+    //caption
+    var captionRender = document.createElement('p');
+    captionRender.textContent = localRandomArray[i].imgCaption;
+
+    divParent.appendChild(imgRender);
+    divParent.appendChild(captionRender);
+
+    //times shown
+
+    var shownCaption = document.createElement('p');
+    shownCaption.textContent = ('Times Shown: ' + localRandomArray[i].shown);
+    divParent.appendChild(shownCaption);
+
+    //current votes
+    var currentVotesCaption = document.createElement('p');
+    currentVotesCaption.textContent = ('Votes: ' + localRandomArray[i].clicked);
+    divParent.appendChild(currentVotesCaption);
+
+
+  }
+
+
+}
+
+
+
+
+function reDrawRandomImages(){
+ 
+
+  var localRandomArray = [];
+
+  var firstRandom = randomizer(0, Product.array.length);
+  var secondRandom = randomizer(0, Product.array.length);
+  var thirdRandom = randomizer(0, Product.array.length);
+
+  drawThreeRandomImages();
+
+
+  function drawThreeRandomImages(){
+    do {
+      secondRandom = randomizer(0, Product.array.length);
+      do {
+        firstRandom = randomizer(0, Product.array.length);
+      } while (firstRandom === secondRandom);
+
+      do {
+        thirdRandom = randomizer(0, Product.array.length);
+      } while (thirdRandom === firstRandom || thirdRandom === secondRandom);
+
+    } while ( (firstRandom === secondRandom) ||
+    (firstRandom === thirdRandom) ||
+    (secondRandom === thirdRandom));
+
+  }
+
+  do {
+    console.log(' !!! image found in previous round !!! ');
+    drawThreeRandomImages();
+  } while (
+    globalRandomArray.includes(firstRandom) ||
+    globalRandomArray.includes(secondRandom) ||
+    globalRandomArray.includes(thirdRandom)
   );
 
-  randomImageIndexGlobal.push(Product.array[firstRandom]);
-  randomImageIndexGlobal.push(Product.array[secondRandom]);
-  randomImageIndexGlobal.push(Product.array[thirdRandom]);
+  localRandomArray.push(Product.array[firstRandom]);
+  localRandomArray.push(Product.array[secondRandom]);
+  localRandomArray.push(Product.array[thirdRandom]);
 
-  localTestArray.push(Product.array[firstRandom]);
-  localTestArray.push(Product.array[secondRandom]);
-  localTestArray.push(Product.array[thirdRandom]);
+  globalRandomArray = [firstRandom,secondRandom,thirdRandom];
 
-  Product.array[firstRandom].shown++;
-  Product.array[secondRandom].shown++;
-  Product.array[thirdRandom].shown++;
 
-  // ============ BROKEN TEST ============ //
-
-  // for (var i = 0; i < localTestArray.length; i++){
-  //   // debugger;
-  //   console.log('first loop: ' + localTestArray[i].imgSrc);
-
-  //   for (var j = 0; j < localTestArray.length; j++){
-
-  //     if (randomImageIndexGlobal[i].imgSrc === localTestArray[j].imgSrc){
-
-  //       console.log('nested loop: duplicate found ');
-  //     }
-  //   }
-
-  // }
-
-  // var randomImageArray = [];
-
-  // var firstRandomImage = randomizer(0, Product.array.length);
-  // randomImageArray.push(firstRandomImage);
-
-  // var randomCount = Math.random() * Product.array.length -1;
-
-  // for (var j = 0; j < randomCount; j++){
-  //   var secondRandomImage;
-
-  //   do {
-  //     secondRandomImage = randomizer(0, Product.array.length);
-  //   } while (secondRandomImage === firstRandomImage);
-
-  //   for (k = 0; k < randomImageArray.length; k++){
-  //     if (secondRandomImage === randomImageArray)
-  //   }
-  // }
 
   // ============ BROKEN TEST ============ //
 
   // ------ how to solve repeating issue ------ //
-
-
 
   // do --> pick random numbers
   // while --> testArray.includes(first) || testArray.includes(second) || testArray.includes(third)
@@ -282,7 +327,7 @@ function drawRandomImages(){
 
   // render images to page -- WORKING CODE -- pulls from localTestArray
 
-  for (var i = 0; i < localTestArray.length; i++){
+  for (var i = 0; i < localRandomArray.length; i++){
 
     // images
     var parent = document.getElementById('pick');
@@ -290,11 +335,12 @@ function drawRandomImages(){
     parent.appendChild(divParent);
 
     var imgRender = document.createElement('img');
-    imgRender.src = localTestArray[i].imgSrc;
+    imgRender.src = localRandomArray[i].imgSrc;
+    localRandomArray[i].shown++;
 
     //caption
     var captionRender = document.createElement('p');
-    captionRender.textContent = localTestArray[i].imgCaption;
+    captionRender.textContent = localRandomArray[i].imgCaption;
 
     divParent.appendChild(imgRender);
     divParent.appendChild(captionRender);
@@ -302,18 +348,19 @@ function drawRandomImages(){
     //times shown
 
     var shownCaption = document.createElement('p');
-    shownCaption.textContent = ('Times Shown: ' + localTestArray[i].shown);
+    shownCaption.textContent = ('Times Shown: ' + localRandomArray[i].shown);
     divParent.appendChild(shownCaption);
 
     //current votes
     var currentVotesCaption = document.createElement('p');
-    currentVotesCaption.textContent = ('Votes: ' + localTestArray[i].clicked);
+    currentVotesCaption.textContent = ('Votes: ' + localRandomArray[i].clicked);
     divParent.appendChild(currentVotesCaption);
 
 
   }
 
 }
+
 
 function randomizer(min, max){
   return Math.floor(Math.random() * (max-min) + min);
@@ -366,7 +413,7 @@ function dynamicRenderImages(){
 // ==================== invocations ==================== //
 
 
-drawRandomImages();
+initialDrawRandomImage();
 
 
 // ==================== chart functions ==================== //
