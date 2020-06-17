@@ -38,10 +38,11 @@ Product.array = [];
 var productVotesArray = [];
 var randomColorArray = [];
 var labelsArray = [];
+var tallyShownArray = [];
 
 var numberOfImages = 3;
 var totalClicks = 0;
-var maxClicks = 5;
+var maxClicks = 25;
 
 
 // ==================== constructors ==================== //
@@ -179,8 +180,6 @@ function wipeOldImages (){
 // }
 
 
-
-
 // ============ WORKING CODE ============= //
 
 
@@ -213,6 +212,10 @@ function drawRandomImages(){
   localTestArray.push(Product.array[secondRandom]);
   localTestArray.push(Product.array[thirdRandom]);
 
+  Product.array[firstRandom].shown++;
+  Product.array[secondRandom].shown++;
+  Product.array[thirdRandom].shown++;
+
   // ============ BROKEN TEST ============ //
 
   // for (var i = 0; i < localTestArray.length; i++){
@@ -228,18 +231,6 @@ function drawRandomImages(){
   //   }
 
   // }
-
-
-  // ============ BROKEN TEST ============ //
-
-
-  Product.array[firstRandom].shown++;
-  Product.array[secondRandom].shown++;
-  Product.array[thirdRandom].shown++;
-
-
-  // ============ BROKEN TEST ============ //
-
 
   // var randomImageArray = [];
 
@@ -261,8 +252,6 @@ function drawRandomImages(){
   // }
 
   // ============ BROKEN TEST ============ //
-
-
 
 
   // render images to page -- WORKING CODE -- pulls from localTestArray
@@ -300,30 +289,155 @@ function drawRandomImages(){
 
 }
 
+function randomizer(min, max){
+  return Math.floor(Math.random() * (max-min) + min);
+}
 
-function renderRandomImages(){
+// =============== STRETCH GOAL STUFF =============== //
+
+// include randomizer check
+// do while
+// check if random index === the first one
+// DO the checking in a loop, see if it equals any of them
+// refactor so we don't need first random image
 
 
-  for (var i = 0; i < randomImageIndexGlobal.length; i++){
-    var parent = document.getElementById('pick');
-    var divParent = document.createElement('div');
-    parent.appendChild(divParent);
+function dynamicRenderImages(){
 
-    var imgRender = document.createElement('img');
-    imgRender.src = randomImageIndexGlobal[i].imgSrc;
+  var parent = document.getElementById('pick');
+  parent.innerHTML = '';
 
+  for (var j = 0; j < numberOfImages; j++){
+    var random = randomizer(0,Product.array.length);
+
+
+    // 2.
+
+    var imageRender = document.createElement('img');
+
+    // 2.5
+    imageRender.src = Product.array[random].imgSrc;
+    Product.array[random].shown++;
+
+
+
+    // 3.
+    parent.appendChild(imageRender);
 
     var captionRender = document.createElement('p');
-    captionRender.textContent = randomImageIndexGlobal[i].imgCaption;
+    captionRender.textContent = Product.array[random].imgCaption;
+    parent.appendChild(captionRender);
 
-    divParent.appendChild(imgRender);
-    divParent.appendChild(captionRender);
+    // console.log('img render: ' + imageRender);
+    // console.log('img render: ' + productArray[random].imgSrc);
   }
+
+  // iterate (numOfImages) times to create X amount of img tags
 
 }
 
 
+// ==================== invocations ==================== //
 
+
+drawRandomImages();
+
+
+// ==================== chart functions ==================== //
+
+
+function createLabelsForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    labelsArray.push(Product.array[i].imgCaption);
+  }
+}
+
+
+function tallyVotesForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    productVotesArray.push(Product.array[i].clicked);
+  }
+}
+
+function tallyShownForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    tallyShownArray.push(Product.array[i].shown);
+  }
+}
+
+
+function colorRandomizer(){
+  for (var i = 0; i < Product.array.length; i++){
+    var x = randomizer(0, 255);
+    var y = randomizer(0, 255);
+    var z = randomizer(0, 255);
+    randomColorArray.push('rgba('+x+','+y+','+z+',0.5)');
+  }
+}
+
+// ========== BROKEN ========== //
+// -- second data set not showing up
+
+
+function renderChartToPage(){
+
+  var hideH1 = document.getElementById('h1');
+  hideH1.innerHTML = '';
+
+  var removePics = document.getElementById('pick');
+  removePics.remove();
+
+  createLabelsForChart();
+  colorRandomizer();
+  tallyVotesForChart();
+
+  var ctx = document.getElementById('myChart');
+
+  var ctx = document.getElementById('myChart');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labelsArray,
+
+      datasets:
+
+      [{
+        label: 'VOTES',
+        data: productVotesArray,
+        backgroundColor: randomColorArray,
+        borderColor: randomColorArray,
+        borderWidth: 2,
+      }],
+
+    },
+
+    data2: {
+      labels: labelsArray,
+      datasets:
+      [{
+        label: 'TIMES SHOWN',
+        data: tallyShownArray,
+        backgroundColor: randomColorArray,
+        borderColor: randomColorArray,
+        borderWidth: 2,
+      }]
+    },
+
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+
+  });
+
+}
+
+// ==================== OLD CODE ==================== //
 
 function renderRandomProducts(){
   // pick a random image
@@ -376,9 +490,6 @@ function renderRandomProducts(){
     randomImageIndexGlobal = [];
   }
 
-
-
-
   /* PICK RANDOM IMAGES */
 
 
@@ -427,160 +538,23 @@ function renderRandomProducts(){
 
 }
 
-
-function renderListTally(){
-
-  var hideH1 = document.getElementById('h1');
-  hideH1.innerHTML = '';
-
-  var removePics = document.getElementById('pick');
-  removePics.remove();
-
-  var clicks = document.getElementById('clicks');
-  var clicksHeading = document.createElement('h2');
-  clicksHeading.textContent = 'Voting Results';
-  clicks.appendChild(clicksHeading);
-
-  for (var i = 0; i < Product.array.length; i++){
-    var listTally = document.createElement('li');
-    listTally.textContent = (
-      Product.array[i].imgCaption + ' had ' +
-      Product.array[i].clicked + ' votes, and was shown ' +
-      Product.array[i].shown + ' times.');
-
-    clicks.appendChild(listTally);
-  }
-
-}
+function renderRandomImages(){
 
 
-function randomizer(min, max){
-  return Math.floor(Math.random() * (max-min) + min);
-}
+  for (var i = 0; i < randomImageIndexGlobal.length; i++){
+    var parent = document.getElementById('pick');
+    var divParent = document.createElement('div');
+    parent.appendChild(divParent);
 
+    var imgRender = document.createElement('img');
+    imgRender.src = randomImageIndexGlobal[i].imgSrc;
 
-
-
-// =============== STRETCH GOAL STUFF =============== //
-
-
-
-// include randomizer check
-// do while
-// check if random index === the first one
-// DO the checking in a loop, see if it equals any of them
-// refactor so we don't need first random image
-
-
-function dynamicRenderImages(){
-
-  var parent = document.getElementById('pick');
-  parent.innerHTML = '';
-
-  for (var j = 0; j < numberOfImages; j++){
-    var random = randomizer(0,Product.array.length);
-
-
-    // 2.
-
-    var imageRender = document.createElement('img');
-
-    // 2.5
-    imageRender.src = Product.array[random].imgSrc;
-    Product.array[random].shown++;
-
-
-
-    // 3.
-    parent.appendChild(imageRender);
 
     var captionRender = document.createElement('p');
-    captionRender.textContent = Product.array[random].imgCaption;
-    parent.appendChild(captionRender);
+    captionRender.textContent = randomImageIndexGlobal[i].imgCaption;
 
-    // console.log('img render: ' + imageRender);
-    // console.log('img render: ' + productArray[random].imgSrc);
+    divParent.appendChild(imgRender);
+    divParent.appendChild(captionRender);
   }
 
-  // iterate (numOfImages) times to create X amount of img tags
-
 }
-
-
-// ==================== invocations ==================== //
-
-
-// renderRandomProducts();
-// dynamicRenderImages();
-
-
-drawRandomImages();
-// renderRandomImages();
-
-
-// ==================== chart functions ==================== //
-
-
-function createLabelsForChart(){
-  for (var i = 0; i < Product.array.length; i++){
-    labelsArray.push(Product.array[i].imgCaption);
-  }
-}
-
-
-function tallyVotesForChart(){
-  for (var i = 0; i < Product.array.length; i++){
-    productVotesArray.push(Product.array[i].clicked);
-  }
-}
-
-
-function colorRandomizer(){
-  for (var i = 0; i < Product.array.length; i++){
-    var x = randomizer(0, 255);
-    var y = randomizer(0, 255);
-    var z = randomizer(0, 255);
-    randomColorArray.push('rgba('+x+','+y+','+z+',0.5)');
-  }
-}
-
-
-function renderChartToPage(){
-
-  var hideH1 = document.getElementById('h1');
-  hideH1.innerHTML = '';
-
-  var removePics = document.getElementById('pick');
-  removePics.remove();
-
-  createLabelsForChart();
-  colorRandomizer();
-  tallyVotesForChart();
-
-  var ctx = document.getElementById('myChart');
-
-  var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labelsArray,
-      datasets: [{
-        label: 'Voting Results',
-        data: productVotesArray,
-        backgroundColor: randomColorArray,
-        borderColor: randomColorArray,
-        borderWidth: 1,
-      }]
-    },
-
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    }
-  });
-}
-
