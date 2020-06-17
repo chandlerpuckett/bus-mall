@@ -2,13 +2,28 @@
   /* outline: red dashed  1px; */
 }
 
+body {
+  background-color: rgba(164,255,220,15%);
+}
+
+
 h1 {
+  /* outline: chocolate dashed 2px; */
+
   width: fit-content;
-  padding: 30px;
-  font-size: 30px;
+
+  padding: 10px;
+  position: absolute;
+
+
+  font-family: Open Sans;
+  font-size: 40px;
   font-weight: 900;
-  position: relative;
-  left: 30%;
+
+  /* position: absolute; */
+  
+  top: 115px;
+  left: 420px;
 }
 
 h2 {
@@ -17,21 +32,133 @@ h2 {
   font-weight: bold;
 }
 
+
 #pick {
+  /* outline: yellowgreen dashed 2px; */
+  background-color: #A4FFDC;
+
   margin: auto;
-  width: auto;
+  display: flex;
+  align-items: center;
+
+  margin-top: 100px;
+
+  width: fit-content;
+  height: 700px;
+
+  box-shadow: 5px 10px 10px #007146;
+
 }
 
-#pick > figure {
-  width: auto;
+#pick > div {
+  display: flex;
+  float: left;
+
+  /* outline: purple dashed 1px; */
+  position: relative;
+
+  width: 450px;
+  height: 450px;
+
+  margin: 10px;
+  padding: 5px
+
+}
+
+div > p:nth-child(1n){
+  position: absolute;
+  font-size: 20px;
+  font-family: Quicksand;
+
+  background-color: rgba(255,192,164,100);
+
+  top: -30px;
+  left: 60px;
+
+  box-shadow: 1px 2px 2px #A73400;
+
+}
+
+div > p:nth-child(2){
+  position: absolute;
+  font-family: Open Sans;
+  font-size: 30px;
+  font-weight: bolder;
+  
+  width: 400px;
+  height: fit-content;
+  padding-bottom: 10px;
+
+  top: 465px;
+  left: 20px;
+
+}
+
+div > p:nth-child(3n) {
+  position: absolute;
+  text-align: center;
+  font-family: Quicksand;
+
+
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  top: 525px;
+  left: 140px;
+  bottom: ; 
+  right: ;
+}
+
+
+p {
+  /* outline: blue dashed 1px; */
+  
+  padding-top: 10px;
+
+  width: 325px;
+  height: 35px;
+
+  text-align: center;
+
+  top: 475px;
+  left: 0px;
+  bottom: 0;
+  right: 100px;
+
 }
 
 img {
-  float: left;
-  margin: 10px;
-  width: 30%;
-  height: auto;
+  /* outline: red dashed 1px; */
+
+  display: flex;
+  align-self: center;
+
+  max-width: 85%;
+  max-height: 85%;
+
+  margin-top: ;
+  margin-left: 30px;
+  margin-bottom: ;
+  margin-right: ;
+
+  border: 1px solid #BFBFBF;
+  background-color: rgb(241, 239, 239);
+  box-shadow: 10px 10px 5px #007146;
+
 }
+
+img:hover {
+  transition: 0.5s;
+
+  /* transition-duration: 2s; */
+  box-shadow: 20px 20px 15px #FF0044;
+}
+
+
 
 #clicks {
   width: fit-content;
@@ -43,4 +170,11 @@ img {
   line-height: 1.5;
   padding-bottom: 50px;
 
+}
+
+#chart {
+  position: relative;
+  max-width: 65%;
+  margin-left: 15%;
+  padding-bottom: 100px;
 }

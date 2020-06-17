@@ -34,8 +34,13 @@
 
 // ==================== GLOBAL VARS / ARRAYS ==================== //
 
-var numberOfImages = 4;
 Product.array = [];
+var productVotesArray = [];
+var randomColorArray = [];
+var labelsArray = [];
+var tallyShownArray = [];
+
+var numberOfImages = 3;
 var totalClicks = 0;
 var maxClicks = 25;
 
@@ -51,26 +56,25 @@ function Product(imgSource, caption){
   Product.array.push(this);
 }
 
-
 new Product('img/bag.jpg', 'star wars bag');
 new Product('img/banana.jpg', 'banana slicer');
-new Product('img/bathroom.jpg', 'bathroom ipad stand');
-new Product('img/boots.jpg', 'rain boots');
-new Product('img/breakfast.jpg', 'coffee toaster oven');
+new Product('img/bathroom.jpg', 'angry turd');
+new Product('img/boots.jpg', 'soggy toes');
+new Product('img/breakfast.jpg', 'breakfast bonanza');
 new Product('img/bubblegum.jpg', 'meatball bubble gum');
 new Product('img/chair.jpg', 'hump chair');
-new Product('img/cthulhu.jpg', 'cthulhu action figure');
-new Product('img/dog-duck.jpg', 'duckbill for dogs');
+new Product('img/cthulhu.jpg', 'cthulhu dark lord');
+new Product('img/dog-duck.jpg', 'quack');
 new Product('img/dragon.jpg', 'dragon meat');
 new Product('img/pen.jpg', 'pen utensils');
 new Product('img/pet-sweep.jpg', 'dog mop');
 new Product('img/scissors.jpg', 'pizza sciccors');
 new Product('img/shark.jpg', 'shark sleeping bag');
-new Product('img/sweep.png', 'meatball bubble gum');
+new Product('img/sweep.png', 'baby sweep');
 new Product('img/tauntaun.jpg', 'star wars sleeping bag');
 new Product('img/unicorn.jpg', 'unicorn meat');
 new Product('img/usb.gif', 'usb tentacle');
-new Product('img/water-can.jpg', 'infinite water loop');
+new Product('img/water-can.jpg', 'water thine self');
 new Product('img/wine-glass.jpg', 'cursed wine glass');
 
 // ==================== functions ==================== //
@@ -86,6 +90,7 @@ function handleClickAProduct(event){
 
 
     var targetSrc = event.target.getAttribute('src');
+
     for (var i = 0; i < Product.array.length; i++){
       if (Product.array[i].imgSrc === targetSrc){
         Product.array[i].clicked++;
@@ -94,11 +99,18 @@ function handleClickAProduct(event){
 
 
     if (totalClicks === maxClicks){
-      renderListTally();
+
+      renderChartToPage();
       pickAProduct.removeEventListener('click',handleClickAProduct);
     }
-    // dynamicRenderImages();
-    renderRandomProducts();
+
+    /*
+    1. Wipe HTML for sake of re-render
+    2. Re-Draw random images
+    */
+
+    wipeOldImages();
+    drawRandomImages();
 
   } else {
     alert('please choose a product');
@@ -106,69 +118,182 @@ function handleClickAProduct(event){
 
 }
 
+function wipeOldImages (){
+  var reset = document.getElementById('pick');
+  reset.innerHTML = '';
+
+}
+
+// ---- WHILE LOOP ERASES ARRAY ---- //
+
+// while (randomImageIndexGlobal.length > 0){
+//   randomImageIndexGlobal = [];
+// }
+
+// function checkDuplicate(x){
+//   let arr = x;
+//   let map = {};
+//   let result = false;
+//   for (let i = 0; i < arr.length; i++){
+//     if (map[arr[i]]){
+//       result = true;
+//       break;
+//     }
+//     map[arr[i]] = true;
+//   }
+//   if (result){
+//     console.log(' found a duplicate in previous round ');
+//   } else {
+//     console.log(' no duplicate in previous round');
+//   }
+// }
+
+
+// checkDuplicate();
+
+// function checkDuplicate(element, index) {
+//   let arr = ['abc','xy','bb', 'abc'];
+//   for(let i = 0; i < arr.length;i++) {
+//     // nested loop
+//     for(let j = 0; j < arr.length;j++) {
+//       // do not compare same elements
+//       if(i !== j) {
+//         // check if elements match
+//         if(arr[i] === arr[j]){
+//           // duplicate element found
+//           result = true;
+//           // terminate inner loop
+//           break;
+//         }
+//       }
+//     }
+//     // terminate outer loop
+//     if(result){
+//       break;
+//     }
+//   }
+//   if(result) {
+//     console.log ('Array contains duplicate elements');
+//   } else {
+//     console.log ('Array does not contain duplicate elements');
+//   }
+// }
+
+
 // ============ WORKING CODE ============= //
 
-function renderRandomProducts(){
+
+var randomImageIndexGlobal = [];
+
+
+function drawRandomImages(){
+
+  var localTestArray = [];
 
   var firstRandom = randomizer(0, Product.array.length);
   var secondRandom = randomizer(0, Product.array.length);
   var thirdRandom = randomizer(0, Product.array.length);
 
-  while (firstRandom === secondRandom || firstRandom === thirdRandom || secondRandom === thirdRandom){
+  do {
     firstRandom = randomizer(0, Product.array.length);
-    secondRandom = randomizer(0, Product.array.length);
     thirdRandom = randomizer(0, Product.array.length);
   }
+  while (
+    thirdRandom === firstRandom ||
+    thirdRandom === secondRandom ||
+    firstRandom === secondRandom
+  );
 
-  //img render
-  var leftImage = document.getElementById('left');
-  var middleImage = document.getElementById('middle');
-  var rightImage = document.getElementById('right');
+  randomImageIndexGlobal.push(Product.array[firstRandom]);
+  randomImageIndexGlobal.push(Product.array[secondRandom]);
+  randomImageIndexGlobal.push(Product.array[thirdRandom]);
 
-  leftImage.src = Product.array[firstRandom].imgSrc;
+  localTestArray.push(Product.array[firstRandom]);
+  localTestArray.push(Product.array[secondRandom]);
+  localTestArray.push(Product.array[thirdRandom]);
+
   Product.array[firstRandom].shown++;
-
-  middleImage.src = Product.array[secondRandom].imgSrc;
   Product.array[secondRandom].shown++;
-
-  rightImage.src = Product.array[thirdRandom].imgSrc;
   Product.array[thirdRandom].shown++;
 
-}
+  // ============ BROKEN TEST ============ //
 
-function renderListTally(){
+  // for (var i = 0; i < localTestArray.length; i++){
+  //   // debugger;
+  //   console.log('first loop: ' + localTestArray[i].imgSrc);
 
-  var removePics = document.getElementById('pick');
-  removePics.remove();
+  //   for (var j = 0; j < localTestArray.length; j++){
 
-  var clicks = document.getElementById('clicks');
-  var clicksHeading = document.createElement('h2');
-  clicksHeading.textContent = 'Voting Results';
-  clicks.appendChild(clicksHeading);
+  //     if (randomImageIndexGlobal[i].imgSrc === localTestArray[j].imgSrc){
 
-  for (var i = 0; i < Product.array.length; i++){
-    var listTally = document.createElement('li');
-    listTally.textContent = (
-      Product.array[i].imgCaption + ' had ' +
-      Product.array[i].clicked + ' votes, and was shown ' +
-      Product.array[i].shown + ' times.');
+  //       console.log('nested loop: duplicate found ');
+  //     }
+  //   }
 
-    clicks.appendChild(listTally);
+  // }
+
+  // var randomImageArray = [];
+
+  // var firstRandomImage = randomizer(0, Product.array.length);
+  // randomImageArray.push(firstRandomImage);
+
+  // var randomCount = Math.random() * Product.array.length -1;
+
+  // for (var j = 0; j < randomCount; j++){
+  //   var secondRandomImage;
+
+  //   do {
+  //     secondRandomImage = randomizer(0, Product.array.length);
+  //   } while (secondRandomImage === firstRandomImage);
+
+  //   for (k = 0; k < randomImageArray.length; k++){
+  //     if (secondRandomImage === randomImageArray)
+  //   }
+  // }
+
+  // ============ BROKEN TEST ============ //
+
+
+  // render images to page -- WORKING CODE -- pulls from localTestArray
+
+  for (var i = 0; i < localTestArray.length; i++){
+
+    // images
+    var parent = document.getElementById('pick');
+    var divParent = document.createElement('div');
+    parent.appendChild(divParent);
+
+    var imgRender = document.createElement('img');
+    imgRender.src = localTestArray[i].imgSrc;
+
+    //caption
+    var captionRender = document.createElement('p');
+    captionRender.textContent = localTestArray[i].imgCaption;
+
+    divParent.appendChild(imgRender);
+    divParent.appendChild(captionRender);
+
+    //times shown
+
+    var shownCaption = document.createElement('p');
+    shownCaption.textContent = ('Times Shown: ' + localTestArray[i].shown);
+    divParent.appendChild(shownCaption);
+
+    //current votes
+    var currentVotesCaption = document.createElement('p');
+    currentVotesCaption.textContent = ('Votes: ' + localTestArray[i].clicked);
+    divParent.appendChild(currentVotesCaption);
+
+
   }
 
 }
-
 
 function randomizer(min, max){
   return Math.floor(Math.random() * (max-min) + min);
 }
 
-
-
-
 // =============== STRETCH GOAL STUFF =============== //
-
-
 
 // include randomizer check
 // do while
@@ -179,9 +304,7 @@ function randomizer(min, max){
 
 function dynamicRenderImages(){
 
-  // var randomImageIndex = [];
-
-  var parent = document.getElementById('figure');
+  var parent = document.getElementById('pick');
   parent.innerHTML = '';
 
   for (var j = 0; j < numberOfImages; j++){
@@ -201,6 +324,9 @@ function dynamicRenderImages(){
     // 3.
     parent.appendChild(imageRender);
 
+    var captionRender = document.createElement('p');
+    captionRender.textContent = Product.array[random].imgCaption;
+    parent.appendChild(captionRender);
 
     // console.log('img render: ' + imageRender);
     // console.log('img render: ' + productArray[random].imgSrc);
@@ -214,48 +340,221 @@ function dynamicRenderImages(){
 // ==================== invocations ==================== //
 
 
-renderRandomProducts();
-// dynamicRenderImages();
+drawRandomImages();
 
 
-// ==================== chart ==================== //
-
-var labels = [];
-
-var ctx = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx, {
-  // The type of chart we want to create
-  type: 'line',
-
-  // The data for our dataset
-  data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45]
-    }]
-  },
-
-  // Configuration options go here
-  options: {}
-});
-
-/*
-
-when to render the chart?
-- when rendering the results, after maxClicks (25)
-
-what data in chart?
-- amount of clicks
-- how many times show
-
-what should the labels be?
-- caption of images
+// ==================== chart functions ==================== //
 
 
+function createLabelsForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    labelsArray.push(Product.array[i].imgCaption);
+  }
+}
+
+
+function tallyVotesForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    productVotesArray.push(Product.array[i].clicked);
+  }
+}
+
+function tallyShownForChart(){
+  for (var i = 0; i < Product.array.length; i++){
+    tallyShownArray.push(Product.array[i].shown);
+  }
+}
+
+
+function colorRandomizer(){
+  for (var i = 0; i < Product.array.length; i++){
+    var x = randomizer(0, 255);
+    var y = randomizer(0, 255);
+    var z = randomizer(0, 255);
+    randomColorArray.push('rgba('+x+','+y+','+z+',0.5)');
+  }
+}
+
+// ========== BROKEN ========== //
+// -- second data set not showing up
+
+
+function renderChartToPage(){
+
+  var hideH1 = document.getElementById('h1');
+  hideH1.innerHTML = '';
+
+  var removePics = document.getElementById('pick');
+  removePics.remove();
+
+  createLabelsForChart();
+  colorRandomizer();
+  tallyVotesForChart();
+
+  var ctx = document.getElementById('myChart');
+
+  var ctx = document.getElementById('myChart');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labelsArray,
+
+      datasets:
+
+      [{
+        label: 'VOTES',
+        data: productVotesArray,
+        backgroundColor: randomColorArray,
+        borderColor: randomColorArray,
+        borderWidth: 2,
+      }],
+
+    },
+
+    data2: {
+      labels: labelsArray,
+      datasets:
+      [{
+        label: 'TIMES SHOWN',
+        data: tallyShownArray,
+        backgroundColor: randomColorArray,
+        borderColor: randomColorArray,
+        borderWidth: 2,
+      }]
+    },
+
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+
+  });
+
+}
+
+// ==================== OLD CODE ==================== //
+
+function renderRandomProducts(){
+  // pick a random image
+
+
+  //check for duplicate in global array (3 images)
+
+  // for (var i = 0; i < randomImageIndexGlobal.length; i++){
+
+  //   while( randomImageIndexGlobal[i] === Product.array[firstRandom].imgSrc || randomImageIndexGlobal[i] === Product.array[secondRandom].imgSrc || randomImageIndexGlobal[i] === Product.array[thirdRandom].imgSrc) {
+
+  //     console.log ('duplicate found - re pick random images');
+
+  //     firstRandom = randomizer(0, Product.array.length);
+  //     secondRandom = randomizer(0, Product.array.length);
+  //     thirdRandom = randomizer(0, Product.array.length);
+
+  //   }
+
+
+  // }
+
+  // while (
+  //   randomImageIndexGlobal[0] === Product.array[firstRandom].imgSrc ||
+  //   randomImageIndexGlobal[1] === Product.array[secondRandom].imgSrc ||
+  //   randomImageIndexGlobal[2] === Product.array[thirdRandom].imgSrc) {
+  //   firstRandom = randomizer(0, Product.array.length);
+  //   secondRandom = randomizer(0, Product.array.length);
+  //   thirdRandom = randomizer(0, Product.array.length);
+  // }
+
+  // for (var i = 0; i < randomImageIndexGlobal.length; i++){
+
+  //   if (
+  //     randomImageIndexGlobal[i] === Product.array[firstRandom].imgSrc ||
+  //     randomImageIndexGlobal[i] === Product.array[secondRandom].imgSrc ||
+  //     randomImageIndexGlobal[i] === Product.array[thirdRandom].imgSrc){
+
+  //     console.log(' duplicate duplicate duplicate ');
+
+  //     firstRandom = randomizer(0, Product.array.length);
+  //     secondRandom = randomizer(0, Product.array.length);
+  //     thirdRandom = randomizer(0, Product.array.length);
+  //   }
+  // }
+
+
+  //empty global array
+  while (randomImageIndexGlobal.length > 0){
+    randomImageIndexGlobal = [];
+  }
+
+  /* PICK RANDOM IMAGES */
+
+
+  var firstRandom = randomizer(0, Product.array.length);
+  var secondRandom = randomizer(0, Product.array.length);
+  var thirdRandom = randomizer(0, Product.array.length);
+
+  do {
+    firstRandom = randomizer(0, Product.array.length);
+    thirdRandom = randomizer(0, Product.array.length);
+  }
+  while (
+    thirdRandom === firstRandom ||
+    thirdRandom === secondRandom ||
+    firstRandom === secondRandom
+  );
+
+  randomImageIndexGlobal.push(Product.array[firstRandom].imgSrc);
+  randomImageIndexGlobal.push(Product.array[secondRandom].imgSrc);
+  randomImageIndexGlobal.push(Product.array[thirdRandom].imgSrc);
 
 
 
-*/
+
+  //img render
+  var leftImage = document.getElementById('left');
+  var middleImage = document.getElementById('middle');
+  var rightImage = document.getElementById('right');
+
+  leftImage.src = Product.array[firstRandom].imgSrc;
+  Product.array[firstRandom].shown++;
+
+  middleImage.src = Product.array[secondRandom].imgSrc;
+  Product.array[secondRandom].shown++;
+
+  rightImage.src = Product.array[thirdRandom].imgSrc;
+  Product.array[thirdRandom].shown++;
+
+  var leftCaption = document.getElementById('left-caption');
+  var middleCaption = document.getElementById('middle-caption');
+  var rightCaption = document.getElementById('right-caption');
+
+  leftCaption.textContent = Product.array[firstRandom].imgCaption;
+  middleCaption.textContent = Product.array[secondRandom].imgCaption;
+  rightCaption.textContent = Product.array[thirdRandom].imgCaption;
+
+}
+
+function renderRandomImages(){
+
+
+  for (var i = 0; i < randomImageIndexGlobal.length; i++){
+    var parent = document.getElementById('pick');
+    var divParent = document.createElement('div');
+    parent.appendChild(divParent);
+
+    var imgRender = document.createElement('img');
+    imgRender.src = randomImageIndexGlobal[i].imgSrc;
+
+
+    var captionRender = document.createElement('p');
+    captionRender.textContent = randomImageIndexGlobal[i].imgCaption;
+
+    divParent.appendChild(imgRender);
+    divParent.appendChild(captionRender);
+  }
+
+}
